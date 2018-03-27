@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuss.model.mapper.log.LoginLogMapper">
+    <select id="findAllLoginLog" resultType="com.liuss.model.entity.log.LoginLog">
+    SELECT * FROM log_loginlog
+    </select>
+    <select id="findLoginLogCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM log_loginlog
+    </select>
+    <select id="findLoginLogByPageAndCount" resultType="com.liuss.model.entity.log.LoginLog">
+        SELECT * FROM log_loginlog limit #{currIndex},#{pageSize}
+    </select>
+    <insert id="loginLog" parameterType="com.liuss.model.entity.log.LoginLog">
+        INSERT INTO log_loginlog(id,delflag,createtime,userid,sessionid,ip) VALUES (#{id},#{delFlag},current_time(),#{userId},#{sessionId},#{ip})
+    </insert>
+    <update id="logoutLog" parameterType="com.liuss.model.entity.log.LoginLog">
+        UPDATE log_loginlog SET updatetime=current_time(),logouttime=current_time() WHERE userid=#{userId} and logouttime is null
+    </update>
+    <delete id="deleteLoginLog" parameterType="java.lang.Integer">
+        DELETE FROM log_loginlog WHERE id=#{id}
+    </delete>
+</mapper>
