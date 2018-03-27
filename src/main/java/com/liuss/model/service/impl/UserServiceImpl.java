@@ -23,6 +23,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getNameByUsername(String username) {
+        User user=userMapper.findUserByLoginName(username);
+        if(user!=null)
+            return user.getName();
+        return null;
+    }
+
+    @Override
     @Transactional
     public int addUserInfo(User user) {
         user.setPassword(EncryptUtil.Md5(user.getPassword()));
