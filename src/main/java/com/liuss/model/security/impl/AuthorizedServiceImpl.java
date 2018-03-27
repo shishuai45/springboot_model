@@ -1,11 +1,16 @@
 package com.liuss.model.security.impl;
 
+import com.alibaba.druid.support.json.JSONParser;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.liuss.model.entity.log.LoginLog;
 import com.liuss.model.entity.sys.User;
 import com.liuss.model.mapper.log.LoginLogMapper;
 import com.liuss.model.mapper.sys.UserMapper;
 import com.liuss.model.security.AuthorizedService;
+import com.liuss.model.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2SmileEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class AuthorizedServiceImpl implements AuthorizedService {
     @Autowired
@@ -75,7 +83,11 @@ public class AuthorizedServiceImpl implements AuthorizedService {
                 loginLog.setSessionId(request.getRequestedSessionId());
                 loginLogMapper.loginLog(loginLog);
             }
-            super.onAuthenticationSuccess(request, response, authentication);
+            Map<String,Object>result=new HashMap<>();
+            result.put("success",true);
+            result.put("url",this.getDefaultTargetUrl());
+            response.getWriter().print(JsonHelper.toJson(result));
+//            super.onAuthenticationSuccess(request, response, authentication);
         }
         private String getIpAddress(HttpServletRequest request){
             String ip = request.getHeader("x-forwarded-for");

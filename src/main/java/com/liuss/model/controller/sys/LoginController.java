@@ -18,6 +18,6 @@ public class LoginController{
     }
     @RequestMapping("/authorized/main")
     public String main(){
-        return "welcome";
+        return "main";
     }
 }

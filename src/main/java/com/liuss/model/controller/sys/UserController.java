@@ -57,7 +57,6 @@ public class UserController extends BaseController {
     }
     @RequestMapping("/greeting")
     public String greeting() {
-
         return "welcome";
     }
 }
