@@ -2,7 +2,7 @@ package com.liuss.model.controller.sys;
 
 import com.liuss.model.controller.BaseController;
 import com.liuss.model.entity.sys.User;
-import com.liuss.model.service.UserService;
+import com.liuss.model.service.sys.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

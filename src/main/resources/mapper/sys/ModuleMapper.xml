@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuss.model.mapper.sys.ModuleMapper">
+    <insert id="insertModule" parameterType="com.liuss.model.entity.sys.Module">
+        INSERT INTO sys_module(delflag,createtime,name,seq,icon) VALUES (#{delFlag},current_time(),#{name},#{seq},#{icon})
+    </insert>
+    <update id="updateModule" parameterType="com.liuss.model.entity.sys.Module">
+        UPDATE sys_module SET delflag=#{delFlag}, updatetime=current_time(),name=#{name},seq=#{seq},icon=#{icon} WHERE id=#{id}
+    </update>
+    <delete id="deleteModule" parameterType="java.lang.Integer">
+        DELETE FROM sys_module WHERE id=#{id}
+    </delete>
+    <select id="findAllModule" resultType="com.liuss.model.entity.sys.Module">
+        SELECT * FROM sys_module
+    </select>
+    <select id="findModuleByName" resultType="com.liuss.model.entity.sys.Module" parameterType="java.lang.String">
+        SELECT * FROM sys_module WHERE name LIKE concat('%',#{name},'%')
+    </select>
+</mapper>

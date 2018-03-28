@@ -1,16 +1,14 @@
-package com.liuss.model.service.impl;
+package com.liuss.model.service.sys.impl;
 
 import com.liuss.model.entity.sys.User;
 import com.liuss.model.mapper.sys.UserMapper;
-import com.liuss.model.service.UserService;
+import com.liuss.model.service.sys.UserService;
 import com.liuss.model.util.EncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,6 +25,11 @@ public class UserServiceImpl implements UserService {
         User user=userMapper.findUserByLoginName(username);
         if(user!=null)
             return user.getName();
+        return null;
+    }
+
+    @Override
+    public String getMenusByUsername(String username) {
         return null;
     }
 

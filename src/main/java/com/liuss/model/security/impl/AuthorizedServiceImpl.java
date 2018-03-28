@@ -51,10 +51,14 @@ public class AuthorizedServiceImpl implements AuthorizedService {
     }
     public LogoutHandler getLogoutHandler(){
         return (httpServletRequest, httpServletResponse, authentication) -> {
-            org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User uu=userMapper.findUserByLoginName(user.getUsername());
-            if(uu!=null)
-                loginLogMapper.logoutLog(uu.getId());
+            try{
+                org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+                User uu=userMapper.findUserByLoginName(user.getUsername());
+                if(uu!=null)
+                    loginLogMapper.logoutLog(uu.getId());
+            }
+           catch (Exception ignored){
+           }
         };
     }
 
@@ -73,21 +77,25 @@ public class AuthorizedServiceImpl implements AuthorizedService {
         }
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-            org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User uu=userMapper.findUserByLoginName(user.getUsername());
-            if(uu!=null){
-                loginLogMapper.logoutLog(uu.getId());
-                LoginLog loginLog=new LoginLog();
-                loginLog.setUserId(uu.getId());
-                loginLog.setIp(getIpAddress(request));
-                loginLog.setSessionId(request.getRequestedSessionId());
-                loginLogMapper.loginLog(loginLog);
-            }
-            Map<String,Object>result=new HashMap<>();
-            result.put("success",true);
-            result.put("url",this.getDefaultTargetUrl());
-            response.getWriter().print(JsonHelper.toJson(result));
+           try {
+               org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+               User uu=userMapper.findUserByLoginName(user.getUsername());
+               if(uu!=null){
+                   loginLogMapper.logoutLog(uu.getId());
+                   LoginLog loginLog=new LoginLog();
+                   loginLog.setUserId(uu.getId());
+                   loginLog.setIp(getIpAddress(request));
+                   loginLog.setSessionId(request.getRequestedSessionId());
+                   loginLogMapper.loginLog(loginLog);
+               }
+               Map<String,Object>result=new HashMap<>();
+               result.put("success",true);
+               result.put("url",this.getDefaultTargetUrl());
+               response.getWriter().print(JsonHelper.toJson(result));
 //            super.onAuthenticationSuccess(request, response, authentication);
+           }
+           catch (Exception ignored){
+           }
         }
         private String getIpAddress(HttpServletRequest request){
             String ip = request.getHeader("x-forwarded-for");

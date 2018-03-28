@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuss.model.mapper.sys.MenuMapper">
+    <insert id="insertMenu" parameterType="com.liuss.model.entity.sys.Menu">
+        INSERT INTO sys_menu(delflag,createtime,moduleid,parentid,name,seq,icon,url) VALUES (#{delFlag},current_time(),#{moduleId},#{parentId},#{name},#{seq},#{icon},#{url})
+    </insert>
+    <update id="updateMenu" parameterType="com.liuss.model.entity.sys.Menu">
+        UPDATE sys_menu SET delflag=#{delFlag},updatetime=current_time(),moduleid=#{moduleId},parentid=#{parentId},name=#{name},seq=#{seq},icon=#{icon},url=#{url} WHERE id=#{id}
+    </update>
+    <delete id="deleteMenu" parameterType="java.lang.Integer">
+        DELETE FROM sys_menu WHERE id=#{id}
+    </delete>
+    <select id="findAllMenus" resultType="com.liuss.model.entity.sys.Menu">
+        SELECT * FROM sys_menu
+    </select>
+    <select id="findMenusByUserId" resultType="com.liuss.model.entity.sys.Menu">
+        SELECT * FROM sys_menu WHERE id IN (SELECT r.menuid FROM sys_rolemenu r INNER JOIN sys_userrole u ON r.roleid=u.roleid and u.userid=#{userid})
+    </select>
+</mapper>

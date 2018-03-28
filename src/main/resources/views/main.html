@@ -12,6 +12,26 @@
 <body style="height: 100%;">
 <script type="text/javascript">
     var username='';
+    var store=Ext.create('Ext.data.TreeStore',{
+        root:{
+            expanded:true,
+            children:[
+                {
+                    text:'系统管理',expanded:true,children:[
+                        {id:1,text:'用户管理',leaf:true,url:'/authorized/greeting'},
+                        {id:2,text:'模块管理',leaf:true,url:'/authorized/greeting'},
+                        {id:3,text:'系统菜单',leaf:true,url:'/authorized/greeting'},
+                        {id:4,text:'角色管理',leaf:true,url:'/authorized/greeting'}
+                    ]
+                },
+                {
+                    text:'日志管理',expanded:true,children:[
+                        {id:5,text:'系统登录日志',leaf:true,url:'/authorized/greeting'}
+                    ]
+                }
+            ]
+        }
+    });
     function getusername() {
         Ext.Ajax.request({
                 url:'/authorized/getusername',
@@ -40,10 +60,18 @@
             items:[
                 {
                     region:'north',
-                    xtype:'panel',
                     height:50,
-                    id:'northArea',
-                    html:'<div style="color: springgreen;background-color:skyblue;font-size: 20px;height: 100%;">Spring Boot Model</div>',
+                    xtype:'panel',
+                    loader:{
+                        renderer : function(loader, response, active) {
+                            loader.getTarget().update(response.responseText, true);
+                            return true;
+                        },
+                        url:"/authorized/header",
+                        loadMask:'loading...',
+                        autoLoad:true,
+                        scripts:true
+                    },
                     rbar:[
                         {xtype:'tbfill'},
                         {
@@ -62,6 +90,81 @@
                         },
                         {xtype:'tbfill'}
                     ]
+                },
+                {
+                    region:'west',
+                    xtype:'treepanel',
+                    collapsible:true,
+                    split:true,
+                    listeners:{
+                        itemclick:function (view, record, item) {
+                            if(record.data.leaf){
+                                var tabPanel=Ext.getCmp('my_center');
+                                var tabcount=tabPanel.items.length;
+                                if(tabcount>=3){
+                                    Ext.Msg.alert('提示','您当前打开了太多的页面，如果继续打开，请先关闭其他页面！');
+                                }else {
+                                    if(!Ext.getCmp(record.data.id)){
+                                        tabPanel.add({
+                                            id:record.data.id,
+                                            title:record.data.text,
+                                            closable:true,
+                                            loader:{
+                                                renderer : function(loader, response, active) {
+                                                    loader.getTarget().update(response.responseText, true);
+                                                    return true;
+                                                },
+                                                url:record.data.url,
+                                                loadMask:'loading...',
+                                                autoLoad:true,
+                                                scripts:true
+                                            }
+                                        });
+                                    };
+                                    tabPanel.setActiveTab(record.data.id);
+                                }
+                            }
+                        }
+                    },
+                    width:200,
+                    store:store,
+                    rootVisible:false
+                },
+                {
+                    id:'southinfo',
+                    region:'south',
+                    split:true,
+                    height:50,
+                    minHeight:20,
+                    loader:{
+                        renderer : function(loader, response, active) {
+                            loader.getTarget().update(response.responseText, true);
+                            return true;
+                        },
+                        url:"/authorized/footer",
+                        loadMask:'loading...',
+                        autoLoad:true,
+                        scripts:true
+                    }
+                },
+                {
+                    region:'center',
+                    id:'my_center',
+                    xtype:'tabpanel',
+                    activeTab:0,
+                    items:{
+                        title:'首页',
+                        loader:{
+                            renderer : function(loader, response, active) {
+                                loader.getTarget().update(response.responseText, true);
+                                return true;
+                            },
+                            url:"/authorized/home",
+                            loadMask:'loading...',
+                            autoLoad:true,
+                            scripts:true
+                        }
+                    }
                 }
             ]
         });

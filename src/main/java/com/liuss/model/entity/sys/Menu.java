@@ -8,6 +8,7 @@ public class Menu extends BaseEntity {
     private String name;
     private Integer seq;
     private String icon;
+    private String url;
 
     public String getName() {
         return name;
@@ -47,5 +48,13 @@ public class Menu extends BaseEntity {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
