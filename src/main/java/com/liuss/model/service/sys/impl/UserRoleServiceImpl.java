@@ -18,6 +18,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public Integer deleteUserRole(Integer id) {
+        return userRoleMapper.deleteUserRole(id);
+    }
+
+    @Override
     public List<UserRole> findUserRolesByUserId(Integer userid) {
         return userRoleMapper.findUserRolesByUserId(userid);
     }

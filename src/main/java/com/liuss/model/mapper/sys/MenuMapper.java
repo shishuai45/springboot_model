@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper
 public interface MenuMapper {
     List<Menu> findMenusByUserId(@Param("userid")Integer userid);
-    List<Module> findModuleByUserId(@Param("userid")Integer userid);
     List<Menu>findMenusByModuleid(@Param("moduleid")Integer moduleid);
     List<Menu>findAllMenus();
     Integer insertMenu(Menu menu);

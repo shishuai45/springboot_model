@@ -16,4 +16,7 @@
     <select id="findModuleByName" resultType="com.liuss.model.entity.sys.Module" parameterType="java.lang.String">
         SELECT * FROM sys_module WHERE name LIKE concat('%',#{name},'%')
     </select>
+    <select id="findModuleByUserId" resultType="com.liuss.model.entity.sys.Module" parameterType="java.lang.Integer">
+        SELECT * FROM sys_module WHERE id in(SELECT DISTINCT m.moduleid FROM sys_menu m ,sys_userrole u,sys_rolemenu r WHERE m.id=r.menuid and r.roleid=u.roleid and u.userid=#{userid}) ORDER by seq
+    </select>
 </mapper>

@@ -1,8 +1,10 @@
 package com.liuss.model.security.impl;
 
 import com.liuss.model.entity.log.LoginLog;
+import com.liuss.model.entity.sys.Role;
 import com.liuss.model.entity.sys.User;
 import com.liuss.model.mapper.log.LoginLogMapper;
+import com.liuss.model.mapper.sys.RoleMapper;
 import com.liuss.model.mapper.sys.UserMapper;
 import com.liuss.model.security.AuthorizedService;
 import com.liuss.model.util.JsonHelper;
@@ -31,6 +33,8 @@ public class AuthorizedServiceImpl implements AuthorizedService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
+    private RoleMapper roleMapper;
+    @Autowired
     private LoginLogMapper loginLogMapper;
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -40,7 +44,10 @@ public class AuthorizedServiceImpl implements AuthorizedService {
         }
         else {
             List<GrantedAuthority> grantedAuthorities=new ArrayList<>();
-            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            List<Role> roles=roleMapper.findRolesByUserid(user.getId());
+            for (int i=0;i<roles.size();i++){
+                grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+roles.get(i).getNameEn()));
+            }
             org.springframework.security.core.userdetails.User uu=new org.springframework.security.core.userdetails.User(s,user.getPassword(),grantedAuthorities);
             return uu;
         }
@@ -53,8 +60,8 @@ public class AuthorizedServiceImpl implements AuthorizedService {
                 if(uu!=null)
                     loginLogMapper.logoutLog(uu.getId());
             }
-           catch (Exception ignored){
-           }
+            catch (Exception ignored){
+            }
         };
     }
 
@@ -73,25 +80,25 @@ public class AuthorizedServiceImpl implements AuthorizedService {
         }
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-           try {
-               org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-               User uu=userMapper.findUserByLoginName(user.getUsername());
-               if(uu!=null){
-                   loginLogMapper.logoutLog(uu.getId());
-                   LoginLog loginLog=new LoginLog();
-                   loginLog.setUserId(uu.getId());
-                   loginLog.setIp(getIpAddress(request));
-                   loginLog.setSessionId(request.getRequestedSessionId());
-                   loginLogMapper.loginLog(loginLog);
-               }
-               Map<String,Object>result=new HashMap<>();
-               result.put("success",true);
-               result.put("url",this.getDefaultTargetUrl());
-               response.getWriter().print(JsonHelper.toJson(result));
+            try {
+                org.springframework.security.core.userdetails.User user=(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+                User uu=userMapper.findUserByLoginName(user.getUsername());
+                if(uu!=null){
+                    loginLogMapper.logoutLog(uu.getId());
+                    LoginLog loginLog=new LoginLog();
+                    loginLog.setUserId(uu.getId());
+                    loginLog.setIp(getIpAddress(request));
+                    loginLog.setSessionId(request.getRequestedSessionId());
+                    loginLogMapper.loginLog(loginLog);
+                }
+                Map<String,Object>result=new HashMap<>();
+                result.put("success",true);
+                result.put("url",this.getDefaultTargetUrl());
+                response.getWriter().print(JsonHelper.toJson(result));
 //            super.onAuthenticationSuccess(request, response, authentication);
-           }
-           catch (Exception ignored){
-           }
+            }
+            catch (Exception ignored){
+            }
         }
         private String getIpAddress(HttpServletRequest request){
             String ip = request.getHeader("x-forwarded-for");

@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Mod_Menu {
     private Integer id;
-    private String name;
+    private String text;
     private String url;
-    private String icon;
+    private String iconCls;
     private boolean leaf;
     private boolean expanded;
-    private List<Mod_Menu> childrens;
+    private List<Mod_Menu> children;
 
     public Integer getId() {
         return id;
@@ -19,36 +19,12 @@ public class Mod_Menu {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public List<Mod_Menu> getChildrens() {
-        return childrens;
-    }
-
-    public void setChildrens(List<Mod_Menu> childrens) {
-        this.childrens = childrens;
     }
 
     public boolean isLeaf() {
@@ -65,5 +41,29 @@ public class Mod_Menu {
 
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
+    }
+
+    public List<Mod_Menu> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Mod_Menu> children) {
+        this.children = children;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getIconCls() {
+        return iconCls;
+    }
+
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
     }
 }

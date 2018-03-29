@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UserService {
     User findUserById(Integer id);
+    User findUserByLoginname(String  loginname);
     String getNameByUsername(String username);
     String getMenusByUsername(String username);
     int addUserInfo(User user);

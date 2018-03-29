@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liuss.model.mapper.sys.RoleMapper">
     <insert id="insertRole" parameterType="com.liuss.model.entity.sys.Role">
-        INSERT INTO sys_role(delflag,createtime,name) VALUES (#{delFlag},current_time(),#{name})
+        INSERT INTO sys_role(delflag,createtime,name,nameen) VALUES (#{delFlag},current_time(),#{name},#{nameEn})
     </insert>
     <update id="updateRole" parameterType="com.liuss.model.entity.sys.Role">
-        UPDATE sys_role SET delflag=#{delFlag},updatetime=current_time(),name=#{name} WHERE id=#{id}
+        UPDATE sys_role SET delflag=#{delFlag},updatetime=current_time(),name=#{name},name=#{nameEn} WHERE id=#{id}
     </update>
     <delete id="deleteRole" parameterType="java.lang.Integer">
         DELETE FROM sys_role WHERE id=#{id}
@@ -15,5 +15,8 @@
     </select>
     <select id="findRolesByName" resultType="com.liuss.model.entity.sys.Role" parameterType="java.lang.String">
         SELECT * FROM sys_role WHERE name LIKE concat('%',#{name},'%')
+    </select>
+    <select id="findRolesByUserid" resultType="com.liuss.model.entity.sys.Role" parameterType="java.lang.Integer">
+        SELECT * FROM sys_role r INNER JOIN sys_userrole u ON r.id=u.roleid AND u.userid=#{userid}
     </select>
 </mapper>

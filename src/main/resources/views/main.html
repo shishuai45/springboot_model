@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>主页</title>
-    <link rel="stylesheet" type="text/css" href="../static/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
     <link rel="stylesheet" type="text/css" href="/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
-    <script type="text/javascript" src="../static/ext5.0.0/ext-all.js"></script>
     <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
     <link rel="stylesheet" href="/bootstrap-3.3.7/css/bootstrap.min.css">
 </head>
 <body style="height: 100%;">
 <script type="text/javascript">
     var username='';
+    var model=Ext.define("TreeModel",{
+        extend:'Ext.data.Model',
+        fields:[
+            {name:'id',type:'string'},
+            {name:'text',type:'string'},
+            {name:'iconCls',type:'string'},
+            {name:'leaf',type:'boolean'},
+            {name:'url',type:'string'},
+            {name:'expanded',type:'boolean'}
+        ]
+    });
     var store=Ext.create('Ext.data.TreeStore',{
-        root:{
-            expanded:true,
-            children:[
-                {
-                    text:'系统管理',expanded:true,children:[
-                        {id:1,text:'用户管理',leaf:true,url:'/authorized/greeting'},
-                        {id:2,text:'模块管理',leaf:true,url:'/authorized/greeting'},
-                        {id:3,text:'系统菜单',leaf:true,url:'/authorized/greeting'},
-                        {id:4,text:'角色管理',leaf:true,url:'/authorized/greeting'}
-                    ]
-                },
-                {
-                    text:'日志管理',expanded:true,children:[
-                        {id:5,text:'系统登录日志',leaf:true,url:'/authorized/greeting'}
-                    ]
-                }
-            ]
-        }
+        model:model,
+        proxy:{
+            type:'ajax',
+            url:'/authorized/getmenus',
+            reader:{
+                type:'json'
+            }
+        },
+        root : {
+            expanded : true
+        },
+        // autoLoad:true
     });
     function getusername() {
         Ext.Ajax.request({
@@ -101,7 +104,7 @@
                             if(record.data.leaf){
                                 var tabPanel=Ext.getCmp('my_center');
                                 var tabcount=tabPanel.items.length;
-                                if(tabcount>=3){
+                                if(tabcount>=10){
                                     Ext.Msg.alert('提示','您当前打开了太多的页面，如果继续打开，请先关闭其他页面！');
                                 }else {
                                     if(!Ext.getCmp(record.data.id)){

@@ -29,15 +29,16 @@ public class InitSysData {
     @Autowired
     private LogService logService;
     @Test
-    public void InitData()
+    public void initData()
     {
+        deleteData();
         addModule();
         addMenu();
         addRole();
         addUser();
     }
     @Test
-    public void addUser()
+    public void deleteData()
     {
         List<LoginLog>loginLogs=logService.findAllLoginLogs();
         for (LoginLog log :
@@ -47,8 +48,36 @@ public class InitSysData {
         List<User> users=userService.findAllUsers();
         for (User user :
                 users) {
+            List<UserRole> userRoles=userRoleService.findUserRolesByUserId(user.getId());
+            for (UserRole userrole :
+                    userRoles) {
+                userRoleService.deleteUserRole(userrole.getId());
+            }
             userService.deleteUser(user.getId());
         }
+        List<Role> roles=roleService.findRolesByName("");
+        for (Role r :
+                roles) {
+            List<RoleMenu> roleMenus=roleMenuService.findRoleMenusByRoleId(r.getId());
+            for (RoleMenu rm :
+                    roleMenus) {
+                roleMenuService.deleteRoleMenu(rm.getId());
+            }
+            roleService.deleteRole(r.getId());
+        }
+        List<Menu>menus=menuService.findMenus();
+        for (Menu men:menus){
+            menuService.deleteMenu(men.getId());
+        }
+        List<Module> modules=moduleService.findModules();
+        for (Module mod :
+                modules) {
+            moduleService.deleteModule(mod.getId());
+        }
+    }
+    @Test
+    public void addUser()
+    {
         User user=new User();
         user.setName("系统管理员");
         user.setLoginName("admin");
@@ -66,11 +95,6 @@ public class InitSysData {
     @Test
     public void addModule()
     {
-        List<Module> modules=moduleService.findModules();
-        for (Module mod :
-                modules) {
-            moduleService.deleteModule(mod.getId());
-        }
         Module module=new Module();
         module.setName("系统管理");
         module.setSeq(10);
@@ -83,10 +107,6 @@ public class InitSysData {
     @Test
     public void addMenu()
     {
-        List<Menu>menus=menuService.findMenus();
-        for (Menu men:menus){
-            menuService.deleteMenu(men.getId());
-        }
         List<Module> modules=moduleService.findModulesByName("系统管理");
         if(modules.size()>0){
             Menu menu=new Menu();
@@ -126,21 +146,12 @@ public class InitSysData {
     @Test
     public void addRole()
     {
-        List<Role> roles=roleService.findRolesByName("");
-        for (Role r :
-                roles) {
-            List<RoleMenu> roleMenus=roleMenuService.findRoleMenusByRoleId(r.getId());
-            for (RoleMenu rm :
-                    roleMenus) {
-                roleMenuService.deleteRoleMenu(rm.getId());
-            }
-            roleService.deleteRole(r.getId());
-        }
         Role role=new Role();
         role.setName("超级管理员");
+        role.setNameEn("Admin");
         roleService.saveRole(role);
         List<Role> roles1=roleService.findRolesByName("超级管理员");
-        if(roles.size()>0){
+        if(roles1.size()>0){
             List<Menu>menus=menuService.findMenus();
             for (Menu menu :
                     menus) {

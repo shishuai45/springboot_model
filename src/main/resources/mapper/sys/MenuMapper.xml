@@ -14,6 +14,6 @@
         SELECT * FROM sys_menu
     </select>
     <select id="findMenusByUserId" resultType="com.liuss.model.entity.sys.Menu">
-        SELECT * FROM sys_menu WHERE id IN (SELECT r.menuid FROM sys_rolemenu r INNER JOIN sys_userrole u ON r.roleid=u.roleid and u.userid=#{userid})
+        SELECT * FROM sys_menu WHERE id IN (SELECT r.menuid FROM sys_rolemenu r INNER JOIN sys_userrole u ON r.roleid=u.roleid and u.userid=#{userid})  ORDER by seq
     </select>
 </mapper>

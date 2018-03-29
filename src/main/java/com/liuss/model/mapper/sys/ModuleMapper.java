@@ -9,6 +9,7 @@ import java.util.List;
 public interface ModuleMapper {
     List<Module>findAllModule();
     List<Module>findModuleByName(@Param("name")String name);
+    List<Module> findModuleByUserId(@Param("userid")Integer userid);
     Integer insertModule(Module module);
     Integer updateModule(Module module);
     Integer deleteModule(@Param("id")Integer id);
