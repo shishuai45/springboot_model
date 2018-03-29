@@ -32,8 +32,7 @@
         },
         root : {
             expanded : true
-        },
-        // autoLoad:true
+        }
     });
     function getusername() {
         Ext.Ajax.request({
@@ -112,16 +111,17 @@
                                             id:record.data.id,
                                             title:record.data.text,
                                             closable:true,
-                                            loader:{
-                                                renderer : function(loader, response, active) {
-                                                    loader.getTarget().update(response.responseText, true);
-                                                    return true;
-                                                },
-                                                url:record.data.url,
-                                                loadMask:'loading...',
-                                                autoLoad:true,
-                                                scripts:true
-                                            }
+                                            autoScroll:true,
+                                            layout:'fit',
+                                            frame:true,
+                                            items:[
+                                                {
+                                                    showMask:true,
+                                                    maskMsg:'正在加载...',
+                                                    scripts:true,
+                                                    html:'<iframe id=""'+'frame_'+record.data.id+'" width="100%" height="100%" frameborder="0" src="'+record.data.url+'"></iframe>'
+                                                }
+                                            ]
                                         });
                                     };
                                     tabPanel.setActiveTab(record.data.id);
@@ -157,16 +157,16 @@
                     activeTab:0,
                     items:{
                         title:'首页',
-                        loader:{
-                            renderer : function(loader, response, active) {
-                                loader.getTarget().update(response.responseText, true);
-                                return true;
-                            },
-                            url:"/authorized/home",
-                            loadMask:'loading...',
-                            autoLoad:true,
-                            scripts:true
-                        }
+                        frame:true,
+                        layout:'fit',
+                        items:[
+                            {
+                                showMask:true,
+                                maskMsg:'正在加载...',
+                                scripts:true,
+                                html:'<iframe id="frame_home" width="100%" height="100%" frameborder="0" src="/authorized/home"></iframe>'
+                            }
+                        ]
                     }
                 }
             ]

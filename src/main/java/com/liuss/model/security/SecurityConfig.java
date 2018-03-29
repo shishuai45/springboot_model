@@ -15,6 +15,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests().antMatchers("/authorized/**").authenticated()
+                .and().headers().frameOptions().sameOrigin()
                 .and().formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password").failureUrl("/login?error").permitAll().successHandler(authorizedService.getAuthenticationSuccessHandler("/authorized/main"))
                 .and().logout().addLogoutHandler(authorizedService.getLogoutHandler()).logoutSuccessUrl("/login").permitAll();
     }

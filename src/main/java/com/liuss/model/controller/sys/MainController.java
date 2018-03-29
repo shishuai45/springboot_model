@@ -28,17 +28,17 @@ public class MainController extends BaseController{
     @RequestMapping("/footer")
     public String footer()
     {
-        return "/layout/footer";
+        return "layout/footer";
     }
     @RequestMapping("/header")
     public String header()
     {
-        return "/layout/header";
+        return "layout/header";
     }
     @RequestMapping("/home")
     public String home()
     {
-        return "/layout/home";
+        return "layout/home";
     }
     @RequestMapping("/getusername")
     @ResponseBody

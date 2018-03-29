@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录日志查看</title>
+    <link rel="stylesheet" type="text/css" href="/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
+    <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    Ext.onReady(function () {
+        var model=Ext.define("LoginLog",
+            {
+                extend:'Ext.data.Model',
+                fields:[
+                    {name:'id',type:'int'},
+                    {name:'createtime',type:'date'},
+                    {name:'username',type:'string'},
+                    {name:'sessionid',type:'string'},
+                    {name:'logouttime',type:'date'},
+                    {name:'ip',type:'string'}
+                ]
+            });
+        var store=Ext.create("Ext.data.Store",{
+            model:model,
+            autoLoad:true,
+            pageSize:25,
+            proxy:{
+                type:'ajax',
+                url:'/authorized/getloginlog',
+                reader:{
+                    type:'json',
+                    root:'data',
+                    totalProperty:'totalCount'
+                }
+            }
+        });
+        new Ext.Viewport(
+            {
+                layout:'border',
+                items:[
+                    {
+                        region:'center',
+                        layout:'fit',
+                        items:[
+                            Ext.create("Ext.grid.Panel",{
+                                xtype:'grid',
+                                store:store,
+                                layout:'fit',
+                                columnLines:true,
+                                columns:[
+                                    {text:'用户',dataIndex:'username',flex:1},
+                                    {text:'登录时间',dataIndex:'createtime',flex:1,renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
+                                    {text:'注销时间',dataIndex:'logouttime',flex:1,renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
+                                    {text:'登录Session',dataIndex:'sessionid',flex:1},
+                                    {text:'登录IP',dataIndex:'ip',flex:1}
+                                ],
+                                bbar:{xtype:'pagingtoolbar',beforePageText:'页',afterPageText:'共 {0} 页',store:store,displayInfo:true,emptyMsg:'没有数据可以显示',displayMsg:'显示 {0}-{1} 条数据，总共 {2} 条数据'}
+                            })
+                        ]
+                    }
+                ]
+            }
+        );
+    });
+</script>
+</body>
+</html>

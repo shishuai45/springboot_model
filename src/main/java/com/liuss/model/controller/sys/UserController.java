@@ -15,6 +15,10 @@ import java.util.List;
 public class UserController extends BaseController {
     @Autowired
     private UserService userService;
+    @RequestMapping("/usermanage")
+    public String userManage(){
+        return "sys/usermanage";
+    }
     @ResponseBody
     @RequestMapping("/findUserById")
     public User findUserById(@RequestParam("userId") Integer userId)

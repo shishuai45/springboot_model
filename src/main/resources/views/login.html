@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
-    <link rel="stylesheet" type="text/css" href="../static/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
     <link rel="stylesheet" type="text/css" href="/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
-    <script type="text/javascript" src="../static/ext5.0.0/ext-all.js"></script>
     <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
     <link rel="stylesheet" type="text/css" href="/bootstrap-3.3.7/css/bootstrap.min.css">
 </head>
@@ -48,37 +46,45 @@
             buttons:[
                 {
                     text:'登录',
+                    id:'login_btn',
                     formBind:true,
                     disabled:true,
-                    handler:function () {
-                        var form=this.up('form').getForm();
-                        Ext.get('faillogin').dom.innerHTML='';
-                        if(form.isValid()){
-                            form.submit({
-                                waitMsg:'正在登录...',
-                                url:'/login',
-                                method:'POST',
-                                success:function (form, action) {
-                                    location.href=action.result.url;
-                                },
-                                failure:function (form, action) {
-                                    var failMsg;
-                                    switch (action.failureType) {
-                                        case Ext.form.Action.CONNECT_FAILURE:
-                                            failMsg='服务器没有响应';
-                                            break;
-                                        case Ext.form.Action.SERVER_INVALID:
-                                            failMsg='用户或密码错误，请重试';
-                                            break;}
-                                    Ext.get('faillogin').dom.innerHTML='<span style="color: red">'+failMsg+'</span>';
-                                }
-                            });
+                    listeners:{
+                        click:function () {
+                            var form=this.up('form').getForm();
+                            Ext.get('faillogin').dom.innerHTML='';
+                            if(form.isValid()){
+                                form.submit({
+                                    waitMsg:'正在登录...',
+                                    url:'/login',
+                                    method:'POST',
+                                    success:function (form, action) {
+                                        location.href=action.result.url;
+                                    },
+                                    failure:function (form, action) {
+                                        var failMsg;
+                                        switch (action.failureType) {
+                                            case Ext.form.Action.CONNECT_FAILURE:
+                                                failMsg='服务器没有响应';
+                                                break;
+                                            case Ext.form.Action.SERVER_INVALID:
+                                                failMsg='用户或密码错误，请重试';
+                                                break;}
+                                        Ext.get('faillogin').dom.innerHTML='<span style="color: red">'+failMsg+'</span>';
+                                    }
+                                });
+                            }
                         }
                     }
                 }
             ]
         });
 
+        Ext.getBody().on('keypress',function (e) {
+            if(e.charCode==Ext.EventObject.ENTER){
+                Ext.getCmp('login_btn').fireEvent('click');
+            }
+        });
         var centerWindow=new Ext.Window({
             layout:'absolute',
             closable:false,
