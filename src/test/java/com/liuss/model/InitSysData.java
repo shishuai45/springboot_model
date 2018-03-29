@@ -1,11 +1,9 @@
 package com.liuss.model;
 
-import com.liuss.model.entity.sys.Menu;
-import com.liuss.model.entity.sys.Module;
-import com.liuss.model.entity.sys.User;
-import com.liuss.model.service.sys.MenuService;
-import com.liuss.model.service.sys.ModuleService;
-import com.liuss.model.service.sys.UserService;
+import com.liuss.model.entity.log.LoginLog;
+import com.liuss.model.entity.sys.*;
+import com.liuss.model.service.log.LogService;
+import com.liuss.model.service.sys.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,30 @@ public class InitSysData {
     private ModuleService moduleService;
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private RoleMenuService roleMenuService;
+    @Autowired
+    private UserRoleService userRoleService;
+    @Autowired
+    private LogService logService;
+    @Test
+    public void InitData()
+    {
+        addModule();
+        addMenu();
+        addRole();
+        addUser();
+    }
     @Test
     public void addUser()
     {
+        List<LoginLog>loginLogs=logService.findAllLoginLogs();
+        for (LoginLog log :
+                loginLogs) {
+            logService.deleteLoginLog(log.getId());
+        }
         List<User> users=userService.findAllUsers();
         for (User user :
                 users) {
@@ -35,6 +54,14 @@ public class InitSysData {
         user.setLoginName("admin");
         user.setPassword("123456");
         userService.addUserInfo(user);
+        List<User> users1=userService.findUsersByName("系统管理员");
+        List<Role>roles=roleService.findRolesByName("超级管理员");
+        if(users1.size()>0&&roles.size()>0){
+            UserRole userRole=new UserRole();
+            userRole.setUserId(users1.get(0).getId());
+            userRole.setRoleId(roles.get(0).getId());
+            userRoleService.saveUserRole(userRole);
+        }
     }
     @Test
     public void addModule()
@@ -94,6 +121,34 @@ public class InitSysData {
             menu.setSeq(1);
             menu.setUrl("/authorized/loginlogview");
             menuService.saveMenu(menu);
+        }
+    }
+    @Test
+    public void addRole()
+    {
+        List<Role> roles=roleService.findRolesByName("");
+        for (Role r :
+                roles) {
+            List<RoleMenu> roleMenus=roleMenuService.findRoleMenusByRoleId(r.getId());
+            for (RoleMenu rm :
+                    roleMenus) {
+                roleMenuService.deleteRoleMenu(rm.getId());
+            }
+            roleService.deleteRole(r.getId());
+        }
+        Role role=new Role();
+        role.setName("超级管理员");
+        roleService.saveRole(role);
+        List<Role> roles1=roleService.findRolesByName("超级管理员");
+        if(roles.size()>0){
+            List<Menu>menus=menuService.findMenus();
+            for (Menu menu :
+                    menus) {
+                RoleMenu rolemenu = new RoleMenu();
+                rolemenu.setMenuId(menu.getId());
+                rolemenu.setRoleId(roles1.get(0).getId());
+                roleMenuService.saveRoleMenu(rolemenu);
+            }
         }
     }
 }

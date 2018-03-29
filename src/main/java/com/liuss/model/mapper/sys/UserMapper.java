@@ -10,6 +10,7 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
     List<User>findAllUser();
+    List<User>findUsersByName(@Param("name")String username);
     User findUser(@Param("id") Integer id);
     User findUserByLoginName(@Param("loginname") String  loginName);
     Integer insertUser(User user);

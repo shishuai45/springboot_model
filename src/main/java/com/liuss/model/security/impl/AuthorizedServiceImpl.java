@@ -1,7 +1,5 @@
 package com.liuss.model.security.impl;
 
-import com.alibaba.druid.support.json.JSONParser;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.liuss.model.entity.log.LoginLog;
 import com.liuss.model.entity.sys.User;
 import com.liuss.model.mapper.log.LoginLogMapper;
@@ -9,8 +7,6 @@ import com.liuss.model.mapper.sys.UserMapper;
 import com.liuss.model.security.AuthorizedService;
 import com.liuss.model.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2SmileEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

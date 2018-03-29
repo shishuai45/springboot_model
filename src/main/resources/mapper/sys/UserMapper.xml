@@ -4,6 +4,9 @@
     <select id="findUser" resultType="com.liuss.model.entity.sys.User">
        SELECT * FROM sys_user WHERE id=#{id}
    </select>
+    <select id="findUsersByName" resultType="com.liuss.model.entity.sys.User">
+        SELECT * FROM sys_user WHERE name LIKE concat('%',#{name},'%')
+    </select>
     <select id="findUserByLoginName" resultType="com.liuss.model.entity.sys.User">
         SELECT * FROM sys_user WHERE loginName=#{loginname}
     </select>
