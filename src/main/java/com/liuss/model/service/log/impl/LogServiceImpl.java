@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,13 +30,13 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public Integer getLoginLogCount() {
-        return loginLogMapper.findLoginLogCount();
+    public Integer getLoginLogCount(String username,Date loginstarttime,Date loginendtime) {
+        return loginLogMapper.findLoginLogCount(username,loginstarttime,loginendtime);
     }
 
     @Override
-    public List<Mod_LoginLog> getLoginLogByIndexAndSize(int index, int size) {
-        List<LoginLog> loginLogs= loginLogMapper.findLoginLogByPageAndCount(index,size);
+    public List<Mod_LoginLog> getLoginLogByIndexAndSize(int index, int size,String username, Date loginstarttime, Date loginendtime) {
+        List<LoginLog> loginLogs= loginLogMapper.findLoginLogByPageAndCount(index,size,username,loginstarttime,loginendtime);
         List<Mod_LoginLog> result=new ArrayList<>();
         for (LoginLog log :
                 loginLogs) {

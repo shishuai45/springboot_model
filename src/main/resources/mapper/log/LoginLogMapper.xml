@@ -4,11 +4,28 @@
     <select id="findAllLoginLog" resultType="com.liuss.model.entity.log.LoginLog">
     SELECT * FROM log_loginlog
     </select>
+    <sql id="findLoginLogSql">
+        <if test="userName!=null and userName!=''">
+            JOIN sys_user u ON l.userid=u.id AND u.name LIKE concat('%',#{userName},'%')
+        </if>
+        <where>
+            <if test="loginStartTime!=null">
+                AND l.createtime >= #{loginStartTime}
+            </if>
+            <if test="loginEndTime!=null">
+                AND #{loginEndTime}>=l.createtime
+            </if>
+        </where>
+    </sql>
     <select id="findLoginLogCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM log_loginlog
+        SELECT COUNT(*) FROM log_loginlog l
+        <include refid="findLoginLogSql"/>
     </select>
     <select id="findLoginLogByPageAndCount" resultType="com.liuss.model.entity.log.LoginLog">
-        SELECT * FROM log_loginlog limit #{currIndex},#{pageSize}
+        SELECT * FROM log_loginlog l
+        <include refid="findLoginLogSql"/>
+        ORDER BY l.createtime DESC
+        limit #{currIndex},#{pageSize}
     </select>
     <insert id="loginLog" parameterType="com.liuss.model.entity.log.LoginLog">
         INSERT INTO log_loginlog(id,delflag,createtime,userid,sessionid,ip) VALUES (#{id},#{delFlag},current_time(),#{userId},#{sessionId},#{ip})

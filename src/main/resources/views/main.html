@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>主页</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
     <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
-    <link rel="stylesheet" href="/bootstrap-3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="/ext5.0.0/packages/ext-locale/build/ext-locale-zh_CN.js"></script>
+    <script type="text/javascript" src="/ext5.0.0/examples/ux/TabCloseMenu.js"></script>
 </head>
 <body style="height: 100%;">
 <script type="text/javascript">
@@ -155,6 +157,11 @@
                     id:'my_center',
                     xtype:'tabpanel',
                     activeTab:0,
+                    plugins:Ext.create('Ext.ux.TabCloseMenu', {
+                        closeTabText: '关闭标签',
+                        closeOthersTabsText: '关闭其他标签',
+                        closeAllTabsText: '关闭所有标签'
+                    }),
                     items:{
                         title:'首页',
                         frame:true,

@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class LogController extends BaseController {
@@ -24,11 +21,14 @@ public class LogController extends BaseController {
     }
     @RequestMapping("/getloginlog")
     @ResponseBody
-    public Map<String,Object> getloginlog(@RequestParam("page")int page,@RequestParam("start")int start,@RequestParam("limit")int limit){
+    public Map<String,Object> getloginlog(@RequestParam("page")int page, @RequestParam("start")int start, @RequestParam("limit")int limit,
+                                          @RequestParam(value = "username",required = false)String username,
+                                          @RequestParam(value = "loginstarttime",required = false)Date loginstarttime,
+                                          @RequestParam(value = "loginendtime",required = false)Date loginendtime){
         Map<String,Object>result=new HashMap<>();
         result.put("success",true);
-        result.put("data",logService.getLoginLogByIndexAndSize(start,limit));
-        result.put("totalCount",logService.getLoginLogCount());
+        result.put("data",logService.getLoginLogByIndexAndSize(start,limit,username,loginstarttime,loginendtime));
+        result.put("totalCount",logService.getLoginLogCount(username,loginstarttime,loginendtime));
         return result;
     }
 }

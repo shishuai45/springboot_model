@@ -4,6 +4,7 @@ import com.liuss.model.entity.log.LoginLog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 @Mapper
 public interface LoginLogMapper {
@@ -11,6 +12,8 @@ public interface LoginLogMapper {
     Integer loginLog(LoginLog log);
     Integer logoutLog(@Param("userId")Integer userid);
     Integer deleteLoginLog(@Param("id") Integer id);
-    Integer findLoginLogCount();
-    List<LoginLog>findLoginLogByPageAndCount(@Param("currIndex")Integer index, @Param("pageSize")Integer size);
+    Integer findLoginLogCount( @Param("userName")String username,@Param("loginStartTime")Date loginStartTime, @Param("loginEndTime")Date loginEndTime);
+    List<LoginLog>findLoginLogByPageAndCount(@Param("currIndex")Integer index, @Param("pageSize")Integer size,
+                                             @Param("userName")String username,
+                                             @Param("loginStartTime")Date loginStartTime, @Param("loginEndTime")Date loginEndTime);
 }
