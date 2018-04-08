@@ -10,8 +10,17 @@
     <delete id="deleteModule" parameterType="java.lang.Integer">
         DELETE FROM sys_module WHERE id=#{id}
     </delete>
+    <select id="findModuleById" resultType="com.liuss.model.entity.sys.Module">
+        SELECT * FROM sys_module WHERE id=#{id}
+    </select>
     <select id="findAllModule" resultType="com.liuss.model.entity.sys.Module">
         SELECT * FROM sys_module
+    </select>
+    <select id="findAllModuleCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sys_module
+    </select>
+    <select id="findModulesByStartAndCount" resultType="com.liuss.model.entity.sys.Module">
+        SELECT * FROM sys_module ORDER BY seq limit #{start},#{count}
     </select>
     <select id="findModuleByName" resultType="com.liuss.model.entity.sys.Module" parameterType="java.lang.String">
         SELECT * FROM sys_module WHERE name LIKE concat('%',#{name},'%')

@@ -8,7 +8,6 @@
     <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
     <script type="text/javascript" src="/ext5.0.0/packages/ext-locale/build/ext-locale-zh_CN.js"></script>
     <script type="text/javascript" src="/ext5.0.0/examples/ux/form/DateTimeField.js"></script>
-    <script type="text/javascript" src="/ext5.0.0/examples/ux/form/SearchField.js"></script>
 </head>
 <body>
 
@@ -36,11 +35,7 @@
                 reader:{
                     type:'json',
                     root:'data',
-                    totalProperty:'totalCount',
-                    extraParams:{
-                        loginstarttime:null,
-                        loginendtime:null
-                    }
+                    totalProperty:'totalCount'
                 }
             }
         });
@@ -101,12 +96,12 @@
                         layout:'fit',
                         items:[{
                             xtype:'grid',
-                            id:'loggrid',
                             store:store,
                             border:false,
                             columnLines:true,
                             forceFit:true,
                             columns:[
+                                {xtype:'rownumberer'},
                                 {text:'用户',dataIndex:'username'},
                                 {text:'登录时间',dataIndex:'createtime',renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
                                 {text:'注销时间',dataIndex:'logouttime',renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},

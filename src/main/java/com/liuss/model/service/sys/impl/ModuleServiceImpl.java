@@ -17,18 +17,29 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public Integer findModulesCount() {
+        return moduleMapper.findAllModuleCount();
+    }
+
+    @Override
+    public List<Module> findModulesByStartAndCount(int start, int count) {
+        return moduleMapper.findModulesByStartAndCount(start,count);
+    }
+
+    @Override
     public List<Module> findModulesByName(String name) {
         return moduleMapper.findModuleByName(name);
     }
 
     @Override
     public Integer saveModule(Module module) {
-        return moduleMapper.insertModule(module);
-    }
-
-    @Override
-    public Integer updateModule(Module module) {
-        return moduleMapper.updateModule(module);
+        Module oldModule=moduleMapper.findModuleById(module.getId());
+        if(oldModule==null){
+            return moduleMapper.insertModule(module);
+        }
+          else {
+            return moduleMapper.updateModule(module);
+        }
     }
 
     @Override
