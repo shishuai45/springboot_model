@@ -14,7 +14,14 @@ public class RoleServiceImpl implements RoleService {
     private RoleMapper roleMapper;
     @Override
     public Integer saveRole(Role role) {
-        return roleMapper.insertRole(role);
+        Role oldRole=roleMapper.findRoleById(role.getId());
+        if(oldRole==null)
+        {
+            return roleMapper.insertRole(role);
+        }
+        else {
+            return roleMapper.updateRole(role);
+        }
     }
 
     @Override
@@ -25,5 +32,15 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findRolesByName(String name) {
         return roleMapper.findRolesByName(name);
+    }
+
+    @Override
+    public Integer findRoleCount() {
+        return roleMapper.findRoleCount();
+    }
+
+    @Override
+    public List<Role> findRolesByStartAndCount(int start, int count) {
+        return roleMapper.findRolesByStartAndCount(start,count);
     }
 }

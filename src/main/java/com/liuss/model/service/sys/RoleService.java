@@ -8,4 +8,6 @@ public interface RoleService {
     Integer saveRole(Role role);
     Integer deleteRole(Integer id);
     List<Role>findRolesByName(String name);
+    Integer findRoleCount();
+    List<Role>findRolesByStartAndCount(int start,int count);
 }

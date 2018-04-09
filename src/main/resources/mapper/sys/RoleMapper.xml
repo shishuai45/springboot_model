@@ -5,13 +5,19 @@
         INSERT INTO sys_role(delflag,createtime,name,nameen) VALUES (#{delFlag},current_time(),#{name},#{nameEn})
     </insert>
     <update id="updateRole" parameterType="com.liuss.model.entity.sys.Role">
-        UPDATE sys_role SET delflag=#{delFlag},updatetime=current_time(),name=#{name},name=#{nameEn} WHERE id=#{id}
+        UPDATE sys_role SET delflag=#{delFlag},updatetime=current_time(),name=#{name},nameen=#{nameEn} WHERE id=#{id}
     </update>
     <delete id="deleteRole" parameterType="java.lang.Integer">
         DELETE FROM sys_role WHERE id=#{id}
     </delete>
-    <select id="findAllRoles" resultType="com.liuss.model.entity.sys.Role">
-        SELECT * FROM sys_role
+    <select id="findRoleById" resultType="com.liuss.model.entity.sys.Role">
+        SELECT * FROM sys_role WHERE id=#{id}
+    </select>
+    <select id="findRoleCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sys_role
+    </select>
+    <select id="findRolesByStartAndCount" resultType="com.liuss.model.entity.sys.Role">
+        SELECT * FROM sys_role limit #{start},#{count}
     </select>
     <select id="findRolesByName" resultType="com.liuss.model.entity.sys.Role" parameterType="java.lang.String">
         SELECT * FROM sys_role WHERE name LIKE concat('%',#{name},'%')
