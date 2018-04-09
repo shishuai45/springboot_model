@@ -186,6 +186,9 @@
                                     extWin.hide();
                                     queryModule();
                                 }
+                                else {
+                                    Ext.Msg.alert('失败',data.msg);
+                                }
                             },
                             failure:function () {
                                 mask.hide();

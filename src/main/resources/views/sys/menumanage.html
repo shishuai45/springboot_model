@@ -3,8 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <title>菜单管理</title>
+    <link rel="stylesheet" type="text/css" href="/ext5.0.0/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css">
+    <link rel="stylesheet" href="/bootstrap-3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="/ext5.0.0/ext-all.js"></script>
+    <script type="text/javascript" src="/ext5.0.0/packages/ext-locale/build/ext-locale-zh_CN.js"></script>
 </head>
 <body>
-
+<script type="text/javascript">
+    var moduleId='';
+    var parentId='';
+    Ext.onReady(function () {
+        var moduleModel=Ext.define('Module',{
+            extend:'Ext.data.Model',
+            fields:[
+                {name:'id',type:'int'},
+                {name:'name',type:'string'}
+            ]
+        });
+        var menuModel=Ext.define('Menu',{
+            extend:'Ext.data.Model',
+            fields:[
+                {name:'id',type:'int'},
+                {name:'createTime',type:'date'},
+                {name:'updateTime',type:'date'},
+                {name:'moduleId',type:'int'},
+                {name:'parentId',type:'int'},
+                {name:'name',type:'string'},
+                {name:'seq',type:'int'},
+                {name:'icon',type:'string'},
+                {name:'url',type:'string'}
+            ]
+        });
+        var moduleStore=Ext.create('Ext.data.Store',{
+            model:moduleModel,
+            autoLoad:true,
+            pageSize:25,
+            proxy:{
+                type:'ajax',
+                url:'/authorized/getmodules',
+                reader:{
+                    type:'json',
+                    root:'data',
+                    totalProperty:'totalCount'
+                }
+            }
+        });
+        var menuStore=Ext.create('Ext.data.Store',{
+            model:menuModel,
+            pageSize:25,
+            proxy:{
+                type:'ajax',
+                url:'/authorized/getMenus',
+                reader:{
+                    type:'json',
+                    root:'data',
+                    totalProperty:'totalCount'
+                }
+            }
+        });
+        menuStore.on('beforeload',function (s) {
+            var params=s.getProxy().extraParams;
+            Ext.apply(params,{
+                moduleid:moduleId
+            });
+        });
+        Ext.create('Ext.container.Viewport',{
+            layout:'border',
+            items:[
+                {
+                    region:'west',
+                    xtype:'grid',
+                    layout:'fit',
+                    store:moduleStore,
+                    border:false,
+                    split:true,
+                    forceFit:true,
+                    hideHeaders:true,
+                    width:250,
+                    title:'系统模块',
+                    columns:[
+                        {header:"ID",hidden:true,dataIndex:'id'},
+                        {dataIndex:'name',align:'center'}
+                    ],
+                    bbar:{xtype:'pagingtoolbar',store:moduleStore},
+                    listeners:{
+                        'rowclick':function (grid, row) {
+                            moduleId=row.data.id;
+                            menuStore.load();
+                        }
+                    }
+                },
+                {
+                    region:'center',
+                    xtype:'grid',
+                    id:'menugrid',
+                    layout:'fit',
+                    store:menuStore,
+                    border:false,
+                    forceFit:true,
+                    title:'系统菜单',
+                    columns:[
+                        {header:"ID",hidden:true,dataIndex:'id'},
+                        {header:"moduleId",hidden:true,dataIndex:'moduleId'},
+                        {header:"parentId",hidden:true,dataIndex:'parentId'},
+                        {header:'菜单名称',dataIndex:'name'},
+                        {header:'地址',dataIndex:'url'},
+                        {header:'排序',dataIndex:'seq'},
+                        {header:'图标',dataIndex:'icon'},
+                        {header:'创建时间',dataIndex:'createTime',renderer:Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
+                        {header:'修改时间',dataIndex:'updateTime',renderer:Ext.util.Format.dateRenderer('Y-m-d H:i:s')}
+                    ],
+                    tbar:[
+                        {
+                            text:'新增',
+                            iconCls:'glyphicon glyphicon-plus-sign',
+                            handler:function () {
+                                Ext.getCmp('moduleId').setValue(moduleId);
+                                Ext.getCmp('parentId').setValue(parentId);
+                                menuWin.show();
+                            }
+                        },
+                        '-',
+                        {
+                            text:'编辑',
+                            iconCls:'glyphicon glyphicon-edit',
+                            handler:function () {
+                                edits();
+                            }
+                        },
+                        '-',
+                        {
+                            text:'删除',
+                            iconCls:'glyphicon glyphicon-minus-sign',
+                            handler:function () {
+                                deleteMenu();
+                            }
+                        }
+                    ],
+                    bbar:{xtype:'pagingtoolbar',store:menuStore,displayInfo:true}
+                }
+            ]
+        });
+        var form=Ext.create('Ext.form.Panel',{
+            autoScroll:true,
+            frame:false,
+            border:false,
+            bodyPadding:10,
+            defaults:{
+                width:350,
+                height:23
+            },
+            items:[
+                {
+                    xtype:'hiddenfield',
+                    id:'menuId',
+                    fieldLabel:'ID'
+                },
+                {
+                    xtype:'hiddenfield',
+                    id:'moduleId',
+                    fieldLabel:'moduleId'
+                },
+                {
+                    xtype:'hiddenfield',
+                    id:'parentId',
+                    fieldLabel:'parentId'
+                },
+                {
+                    xtype:'textfield',
+                    id:'menuName',
+                    fieldLabel:'菜单名称<span style="color: red; ">*</span>',
+                    allowBlank:false
+                },
+                {
+                    xtype:'textfield',
+                    id:'menuUrl',
+                    fieldLabel:'地址'
+                },
+                {
+                    xtype:'numberfield',
+                    id:'menuSeq',
+                    fieldLabel:'模块排序'
+                },
+                {
+                    xtype:'textfield',
+                    id:'menuIcon',
+                    fieldLabel:'模块图标'
+                }
+            ]
+        });
+        var menuWin=Ext.create('Ext.window.Window',{
+            title:'系统菜单',
+            width:420,
+            height:450,
+            closeAction:'hide',
+            modal:true,
+            constrain:true,
+            resizable:true,
+            bodyPadding:10,
+            border:false,
+            buttonAlign:'center',
+            layout:'fit',
+            items:[form],
+            listeners:[
+                {
+                    'close':function () {
+                        form.getForm().reset();
+                    }
+                }
+            ],
+            buttons:[
+                {
+                    text:'保存',
+                    iconCls:'glyphicon glyphicon-floppy-save',
+                    handler:function () {
+                        saveMenu();
+                    }
+                },
+                {
+                    text:'取消',
+                    iconCls:'glyphicon glyphicon-remove-sign',
+                    handler:function () {
+                        form.getForm().reset();
+                        menuWin.hide();
+                    }
+                }
+            ]
+        });
+        var mask=new Ext.LoadMask(form,{msg:'数据保存中...'});
+        var saveMenu=function () {
+            if(form.getForm().isValid()){
+                Ext.Msg.confirm('提示','是否保存？',function (btn) {
+                    if(btn=='yes'){
+                        mask.show();
+                        Ext.Ajax.request({
+                            url:'/authorized/saveMenu',
+                            method:'post',
+                            dataType:'json',
+                            params:{
+                                id:Ext.getCmp('menuId').getValue(),
+                                moduleId:Ext.getCmp('moduleId').getValue(),
+                                parentId:Ext.getCmp('parentId').getValue(),
+                                name:Ext.getCmp('menuName').getValue(),
+                                url:Ext.getCmp('menuUrl').getValue(),
+                                seq:Ext.getCmp('menuSeq').getValue(),
+                                icon:Ext.getCmp('menuIcon').getValue()
+                            },
+                            success:function (response) {
+                                mask.hide();
+                                var data=Ext.JSON.decode(response.responseText);
+                                if(data.success){
+                                    form.getForm().reset();
+                                    menuWin.hide();
+                                    menuStore.loadPage(1);
+                                }
+                                else {
+                                    Ext.Msg.alert('失败',data.msg);
+                                }
+                            },
+                            failure:function () {
+                                mask.hide();
+                                Ext.Msg.alert('提示','保存数据发生错误');
+                            }
+                        });
+                    }
+                })
+            }
+        };
+        var editMenu=function (id,moduleId,parentId, name,url, seq, icon) {
+            Ext.getCmp('menuId').setValue(id);
+            Ext.getCmp('moduleId').setValue(moduleId);
+            Ext.getCmp('parentId').setValue(parentId);
+            Ext.getCmp('menuName').setValue(name);
+            Ext.getCmp('menuUrl').setValue(url);
+            Ext.getCmp('menuSeq').setValue(seq);
+            Ext.getCmp('menuIcon').setValue(icon);
+            menuWin.show();
+        };
+        var edits=function () {
+            var module=Ext.getCmp('menugrid').getSelectionModel().getSelection();
+            if(module.length==0){
+                Ext.Msg.alert('提示','请选择一行进行编辑');
+                return;
+            }
+            else {
+                var id=module[0].get('id');
+                var moduleId=module[0].get('moduleId');
+                var parentId=module[0].get('parentId');
+                var name=module[0].get('name');
+                var url=module[0].get('url');
+                var seq=module[0].get('seq');
+                var icon=module[0].get('icon');
+                editMenu(id,moduleId,parentId,name,url,seq,icon);
+            }
+        };
+        var deleteMenu=function () {
+            var menu=Ext.getCmp('menugrid').getSelectionModel().getSelection();
+            if(menu.length==0){
+                Ext.Msg.alert('提示','请选择至少一行进行删除');
+                return;
+            }
+            else {
+                Ext.Msg.confirm('提示','是否要删除数据',function (btn) {
+                    if(btn=='yes'){
+                        var ids='';
+                        for (var i=0;i<menu.length;i++){
+                            ids+=menu[i].get('id');
+                            if(i<menu.length-1){
+                                ids=ids+','
+                            }
+                        }
+                        Ext.getBody().mask('数据删除中...');
+                        Ext.Ajax.request({
+                            url:'/authorized/deleteMenu',
+                            method:'post',
+                            dataType:'json',
+                            params:{ids:ids},
+                            success:function (response) {
+                                Ext.getBody().unmask();
+                                var data=Ext.JSON.decode(response.responseText);
+                                if(data.success){
+                                    menuStore.loadPage(1);
+                                }
+                                else {
+                                    Ext.Msg.alert('失败',data.msg);
+                                }
+                            },
+                            failure:function () {
+                                Ext.getBody().unmask();
+                                Ext.Msg.alert('提示','删除数据发生异常');
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+</script>
 </body>
 </html>

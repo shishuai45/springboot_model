@@ -26,6 +26,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public List<Menu> findMenusByModuleId(int moduleId,int start,int limit) {
+        return menuMapper.findMenusByModuleid(moduleId,start,limit);
+    }
+
+    @Override
+    public int findMenuCountByModuleId(int moduleId) {
+        return menuMapper.findMenuCountByModuleid(moduleId);
+    }
+
+    @Override
     public List<Mod_Menu> findMenusByUserid(Integer userid) {
         List<Mod_Menu> result=new ArrayList<>();
         List<Module> modules=moduleMapper.findModuleByUserId(userid);
@@ -64,12 +74,21 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Integer saveMenu(Menu menu) {
-        return menuMapper.insertMenu(menu);
-    }
-
-    @Override
-    public Integer updateMenu(Menu menu) {
-        return menuMapper.updateMenu(menu);
+        Menu oldMenu=menuMapper.findMenuById(menu.getId());
+        Menu parentMenu=menuMapper.findMenuById(menu.getParentId());
+        if(parentMenu==null){
+            menu.setParentId(null);
+        }
+        Module module=moduleMapper.findModuleById(menu.getModuleId());
+        if(module==null){
+            menu.setModuleId(null);
+        }
+        if(oldMenu!=null){
+            return menuMapper.updateMenu(menu);
+        }
+        else {
+            return menuMapper.insertMenu(menu);
+        }
     }
 
     @Override

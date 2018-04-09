@@ -10,8 +10,17 @@
     <delete id="deleteMenu" parameterType="java.lang.Integer">
         DELETE FROM sys_menu WHERE id=#{id}
     </delete>
+    <select id="findMenuById" resultType="com.liuss.model.entity.sys.Menu">
+        SELECT * FROM sys_menu WHERE id=#{id}
+    </select>
     <select id="findAllMenus" resultType="com.liuss.model.entity.sys.Menu">
         SELECT * FROM sys_menu
+    </select>
+    <select id="findMenusByModuleid" resultType="com.liuss.model.entity.sys.Menu">
+        SELECT * FROM sys_menu WHERE moduleid=#{moduleid} limit #{start},#{count}
+    </select>
+    <select id="findMenuCountByModuleid" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM sys_menu WHERE moduleid=#{moduleid}
     </select>
     <select id="findMenusByUserId" resultType="com.liuss.model.entity.sys.Menu">
         SELECT * FROM sys_menu WHERE id IN (SELECT r.menuid FROM sys_rolemenu r INNER JOIN sys_userrole u ON r.roleid=u.roleid and u.userid=#{userid})  ORDER by seq
